@@ -1,8 +1,17 @@
+import { wixClientServer } from "@/lib/wixClientServer";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-function ProductList() {
+const productPerPage = 20;
+
+async function ProductList(categoryId: string, limit: number) {
+  const wixClient = await wixClientServer();
+  const items = await wixClient.products
+    .queryProducts()
+    .limit(limit || productPerPage)
+    .find();
+
   return (
     <div className=" mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
       <Link
