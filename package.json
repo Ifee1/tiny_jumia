@@ -12,6 +12,8 @@
     "@wix/bookings": "^1.0.566",
     "@wix/sdk": "^1.15.10",
     "@wix/stores": "^1.0.354",
+    "color-name-list": "^11.5.0",
+    "isomorphic-dompurify": "^2.21.0",
     "js-cookie": "^3.0.5",
     "next": "14.2.2",
     "react": "^18",

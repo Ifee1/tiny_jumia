@@ -6,6 +6,9 @@ const nextConfig = {
         // protocol: "https",
         hostname: "images.pexels.com",
       },
+      {
+        hostname: "static.wixstatic.com",
+      },
     ],
   },
 };
