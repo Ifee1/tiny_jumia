@@ -21,7 +21,7 @@ async function SinglePage({ params }: { params: { slug: string } }) {
     return notFound();
   }
   const productOnDisplay = singleProduct.items[0];
-  // console.log(productOnDisplay.productOptions);
+  // console.log(productOnDisplay.variants);
   // console.log(
   //   "Product Options with Choices:",
   //   JSON.stringify(productOnDisplay.productOptions, null, 2)
@@ -29,52 +29,6 @@ async function SinglePage({ params }: { params: { slug: string } }) {
   // productOnDisplay?.variants?.forEach((variant, index) => {
   //   console.log(`Variant ${index}:`, JSON.stringify(variant, null, 2));
   // });
-
-  const updatedVariants: UpdatedVariant[] =
-    productOnDisplay?.variants?.map((variant) => {
-      const sizeOption = productOnDisplay?.productOptions?.find(
-        (opt) => opt.name === "Size"
-      );
-      const colorOption = productOnDisplay?.productOptions?.find(
-        (opt) => opt.name === "Color"
-      );
-
-      const selectedSize = sizeOption?.choices?.find(
-        (choice) => choice.value === variant.choices?.Size
-      );
-      const selectedColor = colorOption?.choices?.find(
-        (choice) => choice.value === variant.choices?.Color
-      );
-
-      return {
-        choices: {
-          Size:
-            selectedSize?.description ||
-            sizeOption?.choices?.[0]?.description ||
-            "Default Size",
-          Color:
-            selectedColor?.description ||
-            colorOption?.choices?.[0]?.description ||
-            "Default Color",
-        },
-        _id: variant._id ?? "",
-
-        variant: {
-          priceData: variant.variant?.priceData ?? null,
-          convertedPriceData: variant.variant?.convertedPriceData ?? null,
-          weight: variant.variant?.weight ?? 0,
-          sku: variant.variant?.sku ?? "",
-          visible: variant.variant?.visible ?? false,
-        },
-
-        stock: {
-          trackQuantity: variant.stock?.trackQuantity ?? false,
-          inStock: variant.stock?.inStock ?? false,
-        },
-      };
-    }) ?? [];
-
-  // console.log("Updated Variants:", updatedVariants);
 
   return (
     <div className="px-4 md:px-8 lg:pd-16 xl:32 2xl:px-64 flex flex-col lg:flex-row gap-16">
@@ -124,14 +78,20 @@ async function SinglePage({ params }: { params: { slug: string } }) {
 
         <div className="bg-gray-100 h-[2px]" />
 
-        {productOnDisplay.variants && productOnDisplay.productOptions && (
+        {productOnDisplay.variants && productOnDisplay.productOptions ? (
           <CustomizedProducts
             productId={productOnDisplay._id!}
-            variants={updatedVariants!}
+            variants={productOnDisplay.variants!}
+            // variants={updatedVariants!}
             productOptions={productOnDisplay.productOptions!}
           />
+        ) : (
+          <Add
+            productId={productOnDisplay._id!}
+            variantId="00000000-000000-000000-000000000001"
+            stockNumber={productOnDisplay.stock?.quantity || 0}
+          />
         )}
-        <Add />
         <div className="bg-gray-100 h-[2px]" />
         {productOnDisplay.additionalInfoSections?.map(function (section: any) {
           return (

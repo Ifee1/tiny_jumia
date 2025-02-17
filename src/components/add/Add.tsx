@@ -2,14 +2,22 @@
 
 import React, { useState } from "react";
 
-function Add() {
+function Add({
+  productId,
+  variantId,
+  stockNumber,
+}: {
+  productId: string;
+  variantId: string;
+  stockNumber: number;
+}) {
   const [quantity, setQuantity] = useState(1);
-  const stock = 3;
+  // const stock = 3;
 
   function increaseQuantity() {
     setQuantity(quantity + 1);
-    if (quantity === 3) {
-      setQuantity(stock);
+    if (quantity === stockNumber) {
+      setQuantity(stockNumber);
     }
   }
   function decreaseQuantity() {
@@ -38,11 +46,16 @@ function Add() {
               +
             </button>
           </div>
-          <div className="text-sm">
-            <span className="text-orange-400">3 items</span> left! <br />{" "}
-            {"Don't"} miss it
-          </div>
+          {stockNumber < 1 ? (
+            <div className="text-sm">Out of Stock</div>
+          ) : (
+            <div className="text-sm">
+              <span className="text-orange-400">{stockNumber} items</span> left!{" "}
+              <br /> {"Don't"} miss it
+            </div>
+          )}
         </div>
+
         <button
           className="w-36 rounded-3xl ring-1 ring-cartColor text-cartColor py-2 px-4 text-sm
         hover:bg-cartColor hover:text-white disabled:cursor-not-allowed disabled:bg-pink-300 disabled:text-white disabled:ring-none

@@ -4,8 +4,9 @@ import DOMPurify from "isomorphic-dompurify";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import Pagination from "../pagination/Pagination";
 
-const productPerPage = 20;
+const productPerPage = 8;
 
 async function ProductList({
   categoryId,
@@ -17,11 +18,32 @@ async function ProductList({
   searchParams?: any;
 }) {
   const wixClient = await wixClientServer();
-  const fetchedProducts = await wixClient.products
+  let productQuery = wixClient.products
     .queryProducts()
+    .startsWith("name", searchParams?.name || "")
     .eq("collectionIds", categoryId)
+    .hasSome("productType", [searchParams?.type || "physical", "digital"])
+    .gt("priceData.price", searchParams?.min || 0)
+    .lt("priceData.price", searchParams?.max || 99999)
     .limit(limit || productPerPage)
-    .find();
+    .skip(
+      searchParams?.page
+        ? parseInt(searchParams.page) * (limit || productPerPage)
+        : 0
+    );
+  // .find();
+
+  if (searchParams?.sort) {
+    const [sortType, sortBy] = searchParams.sort.split(" ");
+
+    if (sortType === "asc") {
+      productQuery = productQuery.ascending(sortBy);
+    }
+    if (sortType === "desc") {
+      productQuery = productQuery.descending(sortBy);
+    }
+  }
+  const fetchedProducts = await productQuery.find();
   // console.log(fetchedProducts.items[0]);
   return (
     <div className=" mt-12 flex gap-x-8 gap-y-16 justify-between flex-wrap">
@@ -86,6 +108,11 @@ async function ProductList({
           </Link>
         );
       })}
+      <Pagination
+        currentPage={fetchedProducts.currentPage || 0}
+        previousPage={fetchedProducts.hasPrev()}
+        nextPage={fetchedProducts.hasNext()}
+      />
     </div>
   );
 }

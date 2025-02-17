@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import CartModal from "../cartModal/CartModal";
+import { useWixClient } from "@/hooks/useWixClient";
 
 function NavbarIcons() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -22,6 +23,19 @@ function NavbarIcons() {
   function handleCart() {
     setIsCartOpen(!isCartOpen);
   }
+
+  // WIX-MANAGED LOGIN
+  const wixClient = useWixClient();
+
+  // async function wixLogin() {
+  //   const wixLoginRequest = wixClient.auth.generateOAuthData(
+  //     "http://localhost:3000/"
+  //   );
+  //   // console.log(wixLoginRequest)
+  //   localStorage.setItem("wixLogin", JSON.stringify(wixLoginRequest));
+  //   const { authUrl } = await wixClient.auth.getAuthUrl(wixLoginRequest);
+  //   window.location.href = authUrl;
+  // }
   return (
     <div className="flex items-center xl:gap-6 gap-4 relative">
       {isProfileOpen && (
@@ -36,6 +50,7 @@ function NavbarIcons() {
         width={22}
         alt=""
         src="/profile.png"
+        // onClick={wixLogin}
         onClick={handleProfile}
       />
 
