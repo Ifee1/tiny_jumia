@@ -27,11 +27,11 @@ function Navbar() {
             <div className="text-2xl tracking-wide">Tiny_Jumia</div>
           </Link>
           <div className="hidden xl:flex gap-4">
-            <Link href="/">Home Page</Link>
-            <Link href="/">Product Page</Link>
-            <Link href="/">Cart Page</Link>
-            <Link href="/">Checkout Page</Link>
-            <Link href="/">Shipping Page</Link>
+            <Link href="/">Home</Link>
+            <Link href="/">Product</Link>
+            <Link href="/">Cart</Link>
+            <Link href="/">Checkout</Link>
+            <Link href="/">Shipping</Link>
           </div>
         </div>
 

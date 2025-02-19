@@ -6,7 +6,7 @@ import Link from "next/link";
 import React from "react";
 import Pagination from "../pagination/Pagination";
 
-const productPerPage = 8;
+const productPerPage = 5;
 
 async function ProductList({
   categoryId,
@@ -108,11 +108,14 @@ async function ProductList({
           </Link>
         );
       })}
-      <Pagination
-        currentPage={fetchedProducts.currentPage || 0}
-        previousPage={fetchedProducts.hasPrev()}
-        nextPage={fetchedProducts.hasNext()}
-      />
+      {searchParams?.cat ||
+        (searchParams?.name && (
+          <Pagination
+            currentPage={fetchedProducts.currentPage || 0}
+            previousPage={fetchedProducts.hasPrev()}
+            nextPage={fetchedProducts.hasNext()}
+          />
+        ))}
     </div>
   );
 }
