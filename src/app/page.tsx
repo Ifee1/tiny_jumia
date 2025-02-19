@@ -4,8 +4,11 @@ import Slider from "@/components/slider/Slider";
 import { useWixClient } from "@/hooks/useWixClient";
 import { wixClientServer } from "@/lib/wixClientServer";
 import { Suspense, useEffect } from "react";
+import SuccessPage from "./sucess/Success";
 
 const HomePage = async () => {
+ 
+
   // useEffect(function () {
   //   getProducts();
   // }, []);
@@ -43,6 +46,7 @@ const HomePage = async () => {
         <h1 className="text-2xl">New Products</h1>
         {/* <ProductList /> */}
       </div>
+    
     </div>
   );
 };

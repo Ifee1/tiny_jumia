@@ -1,8 +1,8 @@
 "use client";
 import { useWixClient } from "@/hooks/useWixClient";
 import { LoginState } from "@wix/sdk";
-import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 enum MODE {
@@ -22,6 +22,8 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const pathname = usePathname();
+  const router = useRouter();
+  const wixClient = useWixClient();
 
   const formTitle =
     (mode === MODE.LOGIN && "Log in") ||
@@ -35,7 +37,17 @@ function LoginPage() {
     (mode === MODE.REGISTER && "Register your Account") ||
     (mode === MODE.RESET_PASSWORD ? "Reset" : "Verify");
 
-  const wixClient = useWixClient();
+  const isLoggedIn = wixClient.auth.loggedIn();
+  // console.log(isLoggedIn);
+
+  useEffect(
+    function () {
+      if (isLoggedIn) {
+        router.push("/");
+      }
+    },
+    [isLoggedIn]
+  );
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -64,6 +76,7 @@ function LoginPage() {
             email,
             pathname
           );
+          setMessage("Password reset Email sent");
           break;
         case MODE.EMAIL_VERIFICATION:
           response = await wixClient.auth.processVerification({
@@ -84,13 +97,34 @@ function LoginPage() {
           // console.log(tokens);
 
           // Setting the token in the cookie
-          Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
-            expiresAt: 2,
+          Cookies.set("refreshToken", JSON.stringify(tokens?.refreshToken), {
+            expires: 2,
           });
 
           // setting the token in wixClient
           wixClient.auth.setTokens(tokens);
 
+          break;
+
+        case LoginState.FAILURE:
+          if (
+            response.errorCode === "invalidEmail" ||
+            response.errorCode === "invalidPassword"
+          ) {
+            setError("Invalid Email or Password");
+          } else if (response.errorCode === "emailAlreadyExists") {
+            setError("Email already exists");
+          } else if (response.errorCode === "resetPassword") {
+            setError("You need to reset your password");
+          } else {
+            setError("Something went wrong");
+          }
+
+        case LoginState.EMAIL_VERIFICATION_REQUIRED:
+          setMode(MODE.EMAIL_VERIFICATION);
+        case LoginState.OWNER_APPROVAL_REQUIRED:
+          setMessage("Your Account is pending approval");
+        default:
           break;
       }
     } catch (error) {

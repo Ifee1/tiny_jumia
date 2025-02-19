@@ -58,15 +58,15 @@ function CustomizedProducts({
       [optionType]: choice,
     }));
   }
-  // console.log(variants);
+  // console.log(productOptions);
 
   return (
     <div className="flex flex-col gap-4">
-      {productOptions.map(function (option) {
+      {productOptions.map(function (option, index) {
         // console.log("optionChoices", option.choices);
 
         return (
-          <div className="flex flex-col gap-6" key={option.name}>
+          <div className="flex flex-col gap-6" key={option?.name}>
             {/* PRODUCT COLOR */}
             <h4 className="font-medium">Choose a {option.name}</h4>
             <ul className="flex items-center gap-3">
@@ -90,7 +90,7 @@ function CustomizedProducts({
                       backgroundColor: choice.value,
                       cursor: disabled ? "not-allowed" : "pointer",
                     }}
-                    key={option.name}
+                    key={`${option.name}-${choice.value}`}
                     onClick={clickFunction}
                   >
                     {selected && (
@@ -113,7 +113,7 @@ function CustomizedProducts({
                       cursor: disabled ? "not-allowed" : "pointer",
                       boxShadow: disabled ? "none" : "",
                     }}
-                    key={option.name}
+                    key={`${option.name}-${choice.value}`}
                     onClick={clickFunction}
                   >
                     {choice.description}

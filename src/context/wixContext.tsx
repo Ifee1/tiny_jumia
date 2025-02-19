@@ -1,16 +1,19 @@
 "use client";
 import { createClient, OAuthStrategy } from "@wix/sdk";
-import { availabilityCalendar, services } from "@wix/bookings";
+import { currentCart, cart } from "@wix/ecom";
 import { products, collections } from "@wix/stores";
 import Cookies from "js-cookie";
 import { createContext, ReactNode } from "react";
+import { redirects } from "@wix/redirects";
 
 const refreshToken = JSON.parse(Cookies.get("refreshToken") || "{}");
 const wixClient = createClient({
   modules: {
     products,
     collections,
-    // currentCart,
+    currentCart,
+    redirects,
+    cart,
   },
   auth: OAuthStrategy({
     clientId: process.env.NEXT_PUBLIC_WIX_CLIENT_ID || "",
@@ -20,6 +23,7 @@ const wixClient = createClient({
     },
   }),
 });
+// console.log(members);
 
 export type WixClient = typeof wixClient;
 export const WixClientContext = createContext<WixClient>(wixClient);

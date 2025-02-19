@@ -1,5 +1,8 @@
 "use client";
 
+import { useCartStore } from "@/hooks/useCartStore";
+import { useWixClient } from "@/hooks/useWixClient";
+import { currentCart } from "@wix/ecom";
 import React, { useState } from "react";
 
 function Add({
@@ -12,6 +15,8 @@ function Add({
   stockNumber: number;
 }) {
   const [quantity, setQuantity] = useState(1);
+  const { addItem, isLoading } = useCartStore();
+
   // const stock = 3;
 
   function increaseQuantity() {
@@ -26,6 +31,24 @@ function Add({
       setQuantity(1);
     }
   }
+
+  const wixClient = useWixClient();
+
+  // async function addItem() {
+  //   const response = await wixClient.currentCart.addToCurrentCart({
+  //     lineItems: [
+  //       {
+  //         catalogReference: {
+  //           appId: process.env.NEXT_PUBLIC_WIX_APP_ID!,
+  //           catalogItemId: productId!,
+  //           ...(variantId && { options: { variantId } }),
+  //         },
+  //         quantity: quantity,
+  //       },
+  //     ],
+  //   });
+  // }
+
   return (
     <div className="flex flex-col gap-4">
       <h2 className="font-medium">Choose Quantity</h2>
@@ -60,6 +83,8 @@ function Add({
           className="w-36 rounded-3xl ring-1 ring-cartColor text-cartColor py-2 px-4 text-sm
         hover:bg-cartColor hover:text-white disabled:cursor-not-allowed disabled:bg-pink-300 disabled:text-white disabled:ring-none
         "
+          onClick={() => addItem(wixClient, productId, variantId, quantity)}
+          disabled={isLoading}
         >
           Add to Cart
         </button>
