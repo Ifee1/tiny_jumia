@@ -4,12 +4,18 @@ import Menu from "../menu/Menu";
 import Image from "next/image";
 import SearchBar from "../searchBar/SearchBar";
 import dynamic from "next/dynamic";
+import { wixClientServer } from "@/lib/wixClientServer";
 // import NavbarIcons from "../navbarIcons/NavbarIcons";
 const NavbarIcons = dynamic(() => import("../navbarIcons/NavbarIcons"), {
   ssr: false,
 });
 
-function Navbar() {
+async function Navbar() {
+  const wixClient = await wixClientServer();
+
+  const fetchedProducts = await wixClient.products.queryProducts().find();
+  // console.log(fetchedProducts);
+
   return (
     <div className="h-20 px-4 md:px-8 lg:pd-16 xl:32 2xl:px-64 relative">
       {/* For Mobile Devices */}

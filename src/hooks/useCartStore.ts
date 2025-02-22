@@ -9,6 +9,7 @@ type CartState = {
   cart: currentCart.Cart;
   isLoading: boolean;
   counter: number;
+  quantity: number;
   getCart: (wixClient: WixClient) => void;
   addItem: (
     wixClient: WixClient,
@@ -18,6 +19,7 @@ type CartState = {
   ) => void;
   removeItem: (wixClient: WixClient, itemId: string) => void;
   deleteCart: (wixClient: WixClient, _id: string) => void;
+  updateQuantity: (itemId: string, newQuantity: number) => void;
 };
 
 // Defining and creating store
@@ -25,6 +27,7 @@ export const useCartStore = create<CartState>((set) => ({
   cart: [],
   isLoading: true,
   counter: 0,
+  quantity: 10,
   getCart: async (wixClient) => {
     try {
       const cart = await wixClient.currentCart.getCurrentCart();
@@ -98,5 +101,19 @@ export const useCartStore = create<CartState>((set) => ({
     } catch (error) {
       console.log(error);
     }
+  },
+
+  updateQuantity: (itemId: string, newQuantity: number) => {
+    set((state) => {
+      const updatedLineItems = state?.cart?.lineItems?.map((item) => {
+        if (item._id === itemId) {
+          return { ...item, quantity: newQuantity };
+        }
+        return item;
+      });
+      return {
+        cart: { ...state.cart, lineItems: updatedLineItems },
+      };
+    });
   },
 }));

@@ -108,14 +108,25 @@ async function ProductList({
           </Link>
         );
       })}
-      {searchParams?.cat ||
-        (searchParams?.name && (
-          <Pagination
-            currentPage={fetchedProducts.currentPage || 0}
-            previousPage={fetchedProducts.hasPrev()}
-            nextPage={fetchedProducts.hasNext()}
-          />
-        ))}
+      {/* {searchParams?.cat || searchParams?.name ? (
+        <Pagination
+          currentPage={fetchedProducts.currentPage || 0}
+          previousPage={fetchedProducts.hasPrev()}
+          nextPage={fetchedProducts.hasNext()}
+        />
+      ) : null} */}
+      {searchParams?.cat || searchParams?.name ? (
+        <Pagination
+          currentPage={fetchedProducts.currentPage || 0}
+          previousPage={fetchedProducts.hasPrev()}
+          nextPage={fetchedProducts.hasNext()}
+        />
+      ) : null}
+      <Pagination
+        currentPage={fetchedProducts.currentPage || 0}
+        previousPage={fetchedProducts.hasPrev()}
+        nextPage={fetchedProducts.hasNext()}
+      />
     </div>
   );
 }

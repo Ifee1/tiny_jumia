@@ -13,40 +13,15 @@ import { WixClientContext } from "@/context/wixContext";
 
 function CartModal() {
   const wixClient = useWixClient();
-  const { cart, isLoading, removeItem, deleteCart } = useCartStore();
+  const { cart, isLoading, removeItem, deleteCart, updateQuantity, counter } =
+    useCartStore();
   const router = useRouter();
-  const [upgradedPlan, setUpgradedPlan] = useState(false);
 
+  const [upgradedPlan, setUpgradedPlan] = useState(false);
+  const itemId = cart._id;
   // console.log(cart);
-  // Temporary purposes
-  // const cartItems = true;
-  // async function getCart() {
-  //   const cartItems = await wixClient.currentCart.getCurrentCart();
-  //   console.log(cartItems);
-  // }
 
   async function handleCheckOut() {
-    // if you have a payment plan with Wix.
-
-    // const checkOut = await wixClient.currentCart.createCheckoutFromCurrentCart({
-    //   channelType: currentCart.ChannelType.WEB,
-    // });
-
-    // const { redirectSession } = await wixClient.redirects.createRedirectSession(
-    //   {
-    //     ecomCheckout: { checkoutId: checkOut.checkoutId },
-    //     callbacks: {
-    //       postFlowUrl: window.location.origin,
-    //       thankYouPageUrl: `${window.location.origin}/success`,
-    //     },
-    //   }
-    // );
-
-    // if (redirectSession?.fullUrl) {
-    //   window.location.href = redirectSession?.fullUrl;
-    // }
-
-    // If not
     if (!cart?._id) {
       console.error("Cart ID not found.");
       return;
@@ -54,6 +29,14 @@ function CartModal() {
     deleteCart(wixClient, cart._id);
     setUpgradedPlan(true);
   }
+
+  // function decreaseQuantity() {
+  //   setQuantity(quantity - 1);
+  //   if (quantity === 1) {
+  //     setQuantity(1);
+  //   }
+  // }
+
   return (
     <>
       {upgradedPlan ? (
@@ -64,11 +47,20 @@ function CartModal() {
         <div className="w-max absolute p-4 rounded-md shadow-[0_3px_10px_rgb(0,0,0,0.2)] bg-white top-12 right-0 flex flex-col gap-6 z-20">
           {cart.lineItems ? (
             // CART LIST
+
             <>
               <h2 className="text-xl">Shopping Cart</h2>
               <div className="flex flex-col gap-8">
                 {/* {ITEM} */}
                 {cart.lineItems.map(function (lineItem) {
+                  const itemId = lineItem._id || "";
+                  const productId = lineItem.rootCatalogItemId || "";
+                  const variantId =
+                    (lineItem?.catalogReference &&
+                      lineItem?.catalogReference.options?.variantId) ||
+                    "No variant";
+                  const currentQuantity = lineItem.quantity || 0;
+
                   return (
                     <div className="flex gap-4" key={lineItem._id}>
                       {lineItem.image && (
@@ -104,15 +96,55 @@ function CartModal() {
                             </div>
                           </div>
                           {/* PRODUCT DESC */}
+                        </div>
+                        <div className="flex justify-between">
                           <div className="text-sm text-gray-500">
-                            {lineItem.availability?.status}
+                            {lineItem.descriptionLines &&
+                              lineItem.descriptionLines[0]?.colorInfo
+                                ?.original!}
+                          </div>
+
+                          <div className="text-sm text-gray-500">
+                            {cart.currency}
+                            {lineItem.quantity! *
+                              Number(lineItem.price?.amount ?? 0)}
                           </div>
                         </div>
                         {/* BOTTOM */}
                         <div className="flex justify-between text-sm">
-                          <span className="text-gray-500">
-                            {lineItem.quantity}
-                          </span>
+                          <div className="bg-gray-100 py-2 px-4 rounded-3xl flex items-center justify-between w-32">
+                            <button
+                              className="cursor-pointer text-xl"
+                              onClick={() =>
+                                updateQuantity(
+                                  itemId,
+                                  Math.max(currentQuantity - 1, 1)
+                                )
+                              }
+                            >
+                              -
+                            </button>
+                            <span className="text-gray-500">
+                              {lineItem.quantity}
+                            </span>
+                            {/* <span className="text-gray-500">{counter}</span> */}
+
+                            <button
+                              onClick={() =>
+                                updateQuantity(
+                                  itemId,
+                                  Math.min(
+                                    currentQuantity + 1,
+                                    lineItem?.availability?.quantityAvailable!
+                                  )
+                                )
+                              }
+                              className="cursor-pointer text-xl"
+                            >
+                              +
+                            </button>
+                          </div>
+
                           <span
                             className="text-blue-500"
                             style={{
@@ -135,8 +167,7 @@ function CartModal() {
                   <span>{cart?.subtotal.formattedAmount}</span>
                 </div>
                 <p className="text-gray-500 text-sm mt-2 mb-4">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                  Illum, quod!
+                  {/* {cart.} */}
                 </p>
                 <div className="flex justify-between text-sm">
                   <button className="rounded-md py-3 px-4 ring-1 ring-gray-400">

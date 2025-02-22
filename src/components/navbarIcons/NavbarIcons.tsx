@@ -8,6 +8,7 @@ import CartModal from "../cartModal/CartModal";
 import { useWixClient } from "@/hooks/useWixClient";
 import Cookies from "js-cookie";
 import { useCartStore } from "@/hooks/useCartStore";
+import { wixClientServer } from "@/lib/wixClientServer";
 
 function NavbarIcons() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -17,9 +18,11 @@ function NavbarIcons() {
   const router = useRouter();
   const wixClient = useWixClient();
   const isLoggedIn = wixClient.auth.loggedIn();
+  const [quantity, setQuantity] = useState(0);
 
   const { cart, counter, getCart } = useCartStore();
 
+  console.log(cart);
   useEffect(
     function () {
       getCart(wixClient);
