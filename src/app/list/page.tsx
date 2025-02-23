@@ -24,7 +24,7 @@ async function ListPage({ searchParams }: { searchParams: any }) {
         </div>
         <div className="relative w-1/3">
           <Image
-            src="/woman.png"
+            src="/boyWithHeadphones.png"
             alt=""
             sizes="30vw"
             fill

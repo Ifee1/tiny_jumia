@@ -15,7 +15,8 @@ const config: Config = {
       },
 
       colors: {
-        cartColor: "#F35C7A",
+        cartColor: "#D81E5B",
+        // cartColor: "#F35C7A",
       },
     },
   },
